@@ -8,6 +8,7 @@ import (
 	"github.com/tyrm/gemini-forum/config"
 	"github.com/tyrm/gemini-forum/db/postgres"
 	"github.com/tyrm/gemini-forum/gemini"
+	"github.com/tyrm/gemini-forum/kv/redis"
 	"log"
 	"os"
 	"os/signal"
@@ -55,8 +56,15 @@ var geminiCmd = &cobra.Command{
 			return
 		}
 
+		logger.Debugf("creating kv client")
+		kvClient, err := redis.NewClient(c.RedisAddress, c.RedisDB, c.RedisPassword)
+		if err != nil {
+			logger.Errorf("db client: %s", err.Error())
+			return
+		}
+
 		logger.Debugf("creating gemini server")
-		server, err := gemini.NewServer(c, dbClient)
+		server, err := gemini.NewServer(c, dbClient, kvClient)
 		if err != nil {
 			logger.Errorf("gemini server: %s", err.Error())
 			return

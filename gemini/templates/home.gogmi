@@ -1,0 +1,4 @@
+{{ define "home" -}}
+# Forum Home
+Welcome
+{{- end }}

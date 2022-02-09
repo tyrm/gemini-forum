@@ -2,15 +2,12 @@ package postgres
 
 import (
 	"github.com/jmoiron/sqlx"
-	"github.com/juju/loggo"
 	// pq used by sqlx
 	_ "github.com/lib/pq"
 	"github.com/markbates/pkger"
 	"github.com/rubenv/sql-migrate"
 	"github.com/tyrm/gemini-forum/config"
 )
-
-var logger = loggo.GetLogger("db.pq")
 
 // Client is a database client.
 type Client struct {
