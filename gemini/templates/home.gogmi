@@ -1,4 +1,26 @@
 {{ define "home" -}}
-# Forum Home
+# {{.PageTitle}}
 Welcome
+
+{{ if .User -}}
+## Welcome {{ .User.Username }}
+=>/register Register
+{{- else -}}
+## Welcome Guest
+=>/register Register
+{{- end }}
+
+## Categories
+### LGBTQ
+=>/f/asdf 🔷 General
+Topics 1 · Replies 1
+=>/f/asdf/t/asdf 📩 Last: Welcome to gemini-forum by administrator
+
+=>/f/asdf 🔷 Off Topic
+Topics 69 · Replies 420
+=>/f/asdf/t/asdf 📩 Last: Meow Meow Meow by administrator
+
+## Statistics
+Posts 1 · Topics 1 · Members 1
+{{- template "footer" . -}}
 {{- end }}

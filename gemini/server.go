@@ -1,6 +1,7 @@
 package gemini
 
 import (
+	"crypto/tls"
 	"github.com/markbates/pkger"
 	"github.com/pitr/gig"
 	"github.com/tyrm/gemini-forum/config"
@@ -24,23 +25,22 @@ func NewServer(cfg *config.Config, d db.DB, k kv.KV) (*Server, error) {
 		server: gig.Default(),
 	}
 
+	// High Security
+	server.server.TLSConfig.MinVersion = tls.VersionTLS13
+
 	// Load Templates
 	templateDir := pkger.Include("/gemini/templates")
 	t, err := compileTemplates(templateDir)
 	if err != nil {
 		return nil, err
 	}
-	server.server.Renderer = &Template{t}
+	server.server.Renderer = &templateRenderer{t}
+
+	// Create Routes
+	server.server.Use(server.middleware)
 
 	server.server.Handle("/", server.handleHome)
-
-	server.server.Handle("/user", func(c gig.Context) error {
-		query, err := c.QueryString()
-		if err != nil {
-			return err
-		}
-		return c.Gemini("# Hello, %s!", query)
-	})
+	server.server.Handle("/register", server.handleRegister)
 
 	return &server, nil
 }

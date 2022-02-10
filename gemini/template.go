@@ -3,6 +3,7 @@ package gemini
 import (
 	"github.com/markbates/pkger"
 	"github.com/pitr/gig"
+	"github.com/tyrm/gemini-forum/models"
 	"io"
 	"io/ioutil"
 	"os"
@@ -10,13 +11,27 @@ import (
 	"text/template"
 )
 
-type Template struct {
+type templateVars interface {
+	SetUser(u *models.User)
+}
+
+type templateRenderer struct {
 	templates *template.Template
 }
 
-func (t *Template) Render(w io.Writer, name string, data interface{}, c gig.Context) error {
+func (t *templateRenderer) Render(w io.Writer, name string, data interface{}, c gig.Context) error {
 	// Execute named template with data
 	return t.templates.ExecuteTemplate(w, name, data)
+}
+
+type templateCommon struct {
+	PageTitle string
+	User      *models.User
+}
+
+func (t *templateCommon) SetUser(u *models.User) {
+	t.User = u
+	return
 }
 
 func compileTemplates(dir string) (*template.Template, error) {
@@ -48,4 +63,14 @@ func compileTemplates(dir string) (*template.Template, error) {
 	})
 
 	return tpl, err
+}
+
+func initTemplate(c gig.Context, tmpl templateVars) error {
+	// add user
+	if c.Get("user") != nil {
+		user := c.Get("user").(*models.User)
+		tmpl.SetUser(user)
+	}
+
+	return nil
 }

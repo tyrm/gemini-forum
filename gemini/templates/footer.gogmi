@@ -1,0 +1,5 @@
+{{ define "footer" }}
+
+
+=>gemini://tyr.blue/projects/forum Powered By Gemini-Forum
+{{- end }}

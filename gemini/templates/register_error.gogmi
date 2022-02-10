@@ -1,0 +1,7 @@
+{{ define "register_error" -}}
+# {{.PageTitle}}
+{{.ErrorTest}}
+
+=>/register ↩️ Try Again
+{{- template "footer" . -}}
+{{- end }}
